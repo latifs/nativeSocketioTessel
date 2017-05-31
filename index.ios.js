@@ -1,53 +1,87 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
-
 import React, { Component } from 'react';
 import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  TextInput,
+  Button
 } from 'react-native';
 
+import socket from 'socket.io-client'
+const io = socket.connect('http://10.0.1.42:3000')
+
 export default class nativeSocketioTessel extends Component {
+  constructor(){
+    super()
+    this.state = {
+      message : 'nothing yet',
+      timestamp: '',
+      toSend: ''
+    }
+    
+    io.on('message', (res) => {
+      this.displayMessage(res)
+    })
+  }
+
+  displayMessage(res) {
+    this.setState(res)
+  }
+
+  sendMessage() {
+    if(this.state.toSend.trim() !== '') {
+      io.emit('call', this.state.toSend)
+      this.setState({
+        toSend: ''
+      })
+    }
+  }
+
   render() {
+    const { message, timestamp } = this.state
+    
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
-          Welcome to nativeSocketioTessel!
+          Message From server:
         </Text>
-        <Text style={styles.instructions}>
-          start hacking here
+        <Text style={styles.welcome}>
+          {timestamp}: {message}
         </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
+        <TextInput
+          style={styles.input}
+          onChangeText={(toSend) => this.setState({toSend})}
+          value={this.state.toSend}
+        />
+        <Button
+          onPress={this.sendMessage.bind(this)}
+          title="Send"
+          color="#841584"
+        />
       </View>
-    );
+    )
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
   welcome: {
+    flex:1,
     fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+    margin: 20,
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+  input: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 40,
+    textAlignVertical: 'top',
+    borderColor: 'gray',
+    borderWidth: 1
+  }
+})
 
-AppRegistry.registerComponent('nativeSocketioTessel', () => nativeSocketioTessel);
+AppRegistry.registerComponent('nativeSocketioTessel', () => nativeSocketioTessel)
