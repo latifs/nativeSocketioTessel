@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import socket from 'socket.io-client'
-const io = socket.connect('http://10.0.1.42:3000')
+const io = socket.connect('http://localhost:3000')
 
 export default class nativeSocketioTessel extends Component {
   constructor(){

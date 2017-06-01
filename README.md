@@ -9,11 +9,16 @@
 * npm install
 * npm run server
 
-### Step 2 - Install the react native app
+### Step 2 - Enter the Url of your server in your client app
+* open index.ios.js and index.android.js
+* find the line below and chage the ip for your server' ip
+* const io = socket.connect('http://xxx.xx.xx.x:3000')
+
+### Step 3 - Run the react native app
 * in terminal:
 * react-native run-ios
 
-### Step 3 - Using the app
+### Step 4 - Using the app
 There is 3 ways for the server to send messages to the App
 * the terminal, by just typing the message
 * the browser, by hitting the endpoint /messages/:message (where message is what you're sending)
