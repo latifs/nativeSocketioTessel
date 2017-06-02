@@ -8,25 +8,26 @@ import {
 } from 'react-native'
 
 import socket from 'socket.io-client'
-const io = socket.connect('http://localhost:3000')
 
 export default class Main extends Component {
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
     this.state = {
       message : 'nothing yet',
       timestamp: '',
       toSend: ''
     }
-    
-    io.on('message', (res) => {
+
+    let { ip, port } = this.props.navigation.state.params
+    this.io = socket.connect(`http://${ip}:${port}`)
+    this.io.on('message', (res) => {
       this.setState(res)
     })
   }
 
-  sendMessage() {
+  sendMessageToServer() {
     if(this.state.toSend.trim() !== '') {
-      io.emit('call', this.state.toSend)
+      this.io.emit('call', this.state.toSend.trim())
       this.setState({
         toSend: ''
       })
@@ -49,7 +50,7 @@ export default class Main extends Component {
           value={toSend}
         />
         <Button
-          onPress={this.sendMessage.bind(this)}
+          onPress={this.sendMessageToServer.bind(this)}
           title="Send"
         />
       </View>
@@ -73,6 +74,7 @@ const styles = StyleSheet.create({
     height: 40,
     textAlignVertical: 'top',
     borderColor: 'gray',
-    borderWidth: 1
+    borderWidth: 1,
+    margin: 10
   }
 })

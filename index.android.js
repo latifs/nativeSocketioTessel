@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import { AppRegistry } from 'react-native'
-import Main from './App/Components/Main'
+import { StackNavigator } from 'react-navigation'
 
-export default class nativeSocketioTessel extends Component {
-  render() {
-    return (
-      <Main />
-    )
-  }
-}
+import Main from './App/Components/MainScreen'
+import Home from './App/Components/HomeScreen'
+
+const nativeSocketioTessel = StackNavigator({
+  home: { screen: Home },
+  main: { screen: Main }
+})
 
 AppRegistry.registerComponent('nativeSocketioTessel', () => nativeSocketioTessel)
