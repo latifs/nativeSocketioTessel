@@ -7,7 +7,8 @@ import {
   Button
 } from 'react-native'
 
-import socket from 'socket.io-client'
+import '../UserAgent';
+const io = require('socket.io-client/dist/socket.io')
 
 export default class Main extends Component {
   constructor(props){
@@ -19,15 +20,15 @@ export default class Main extends Component {
     }
 
     let { ip, port } = this.props.navigation.state.params
-    this.io = socket.connect(`http://${ip}:${port}`)
-    this.io.on('message', (res) => {
+    this.socket = io(`http://${ip}:${port}`, {jsonp: false})
+    this.socket.on('message', (res) => {
       this.setState(res)
     })
   }
 
   sendMessageToServer() {
     if(this.state.toSend.trim() !== '') {
-      this.io.emit('call', this.state.toSend.trim())
+      this.socket.emit('call', this.state.toSend.trim())
       this.setState({
         toSend: ''
       })
